@@ -1,40 +1,15 @@
-# Polices (CSS premium référence: Inter + Phosphor + Material Symbols Rounded + JetBrainsMono Nerd)
+# Paquets ajoutés par-dessus l'install ML4W stable de base.
+# Tout ce qui suit a été ajouté APRÈS ML4W (vérifié par date d'install pacman).
+# Le reste (rofi, swaync, wireplumber, nwg-dock-hyprland, jq, quickshell, networkmanager,
+# pavucontrol, playerctl, libnotify, polkit, power-profiles-daemon, brightnessctl,
+# blueman, network-manager-applet, cliphist, wl-clipboard, polices nerd, phosphor,
+# material-symbols, font-awesome, etc.) est fourni par ML4W.
+
+# Police Inter utilisée par le thème waybar premium
 inter-font
-ttf-phosphor-icons
-ttf-firacode-nerd
-ttf-jetbrains-mono-nerd
-ttf-material-symbols-variable
-otf-font-awesome
 
-# Audio (waybar: audio-menu, mic, mic-privacy, pulseaudio module, backlight scroll)
-wireplumber          # wpctl, pactl wrappers
-pavucontrol
-playerctl
+# bluetoothctl (bluetooth-menu.sh) — pas inclus par ML4W stable
+bluez-utils
 
-# Réseau & VPN (waybar: wifi-menu, vpn ; hypr: nm-applet tray)
-networkmanager
-nm-connection-editor
-network-manager-applet
-wireguard-tools      # détecté optionnellement par vpn.sh (command -v wg)
-
-# Bluetooth (waybar: bluetooth-menu ; hypr: blueman-applet tray)
-bluez-utils          # bluetoothctl
-blueman
-
-# Affichage / batterie / power
-brightnessctl
-power-profiles-daemon
-
-# Notifications & polkit (notify-send + pkexec rfkill unblock)
-swaync
-libnotify
-polkit
-
-# Clipboard (SUPER+V cliphist popup)
-cliphist
-wl-clipboard
-
-# Outils divers
-jq                   # media.sh, window.sh
-rofi                 # menus contextuels wifi/bt/audio + cliphist
-quickshell           # qs ipc call sidebar/calendar/welcome
+# Optionnel : détection WireGuard par vpn.sh (`command -v wg`)
+wireguard-tools

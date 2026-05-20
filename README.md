@@ -11,17 +11,17 @@ Overlay de mes customisations par-dessus [ML4W dotfiles](https://github.com/myli
 
 ## Install (nouvelle machine)
 
-Pré-requis : Arch (ou dérivé), [`yay`](https://github.com/Jguer/yay) installé (pour les paquets AUR), et ML4W stable déjà installé.
+Pré-requis : Arch (ou dérivé) avec ML4W stable déjà installé.
 
 ```bash
-git clone <ce-repo> ~/dotfiles-custom
+git clone git@github.com:charliegene14/hyprland-config.git ~/dotfiles-custom
 cd ~/dotfiles-custom
 ./install.sh
 ```
 
 Le script :
-1. Installe les paquets officiels (`pacman -S --needed`) listés dans `packages-pacman.txt`
-2. Installe les paquets AUR (`yay -S --needed`) listés dans `packages-aur.txt` (actuellement : `nwg-dock-hyprland`)
+1. Installe les paquets manquants (`pacman -S --needed`) listés dans `packages-pacman.txt` — uniquement ceux qui ne sont pas fournis par ML4W (`inter-font`, `bluez-utils`, `wireguard-tools`)
+2. Si `packages-aur.txt` existe et non vide : installe via `yay` (actuellement non utilisé — tout vient de ML4W ou pacman officiel)
 3. Copie l'overlay dans `~/.mydotfiles/com.ml4w.dotfiles.stable/.config/` avec backup `*.bak.<date>` de tout fichier ML4W remplacé
 4. Rend les scripts exécutables
 
