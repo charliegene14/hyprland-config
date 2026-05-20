@@ -1,0 +1,419 @@
+/*
+ * premium — macOS Sequoia-inspired Waybar theme
+ * Single floating pill, full-width, blur via Hyprland layerrule.
+ * Fonts: Inter (text) + Material Symbols Rounded (icons).
+ */
+
+@import url("../../../colors.css");
+
+/* ═══════════════════════════ Fonts & resets ═══════════════════════════ */
+
+* {
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  font-family: "Inter", "Phosphor", "Material Symbols Rounded", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+/* ═══════════════════════════ The pill itself ═══════════════════════════ */
+
+window#waybar {
+  background: alpha(@background, 0.18);
+  color: @on_background;
+  border: 1px solid alpha(@on_background, 0.15);
+  border-radius: 14px;
+  box-shadow: 0 4px 16px alpha(black, 0.18);
+}
+
+window#waybar.empty {
+  background: transparent;
+  border: none;
+}
+
+.modules-left,
+.modules-center,
+.modules-right {
+  padding: 0 6px;
+}
+
+/* ═══════════════════════════ Generic module sizing ═══════════════════════════ */
+
+/*
+ * All modules: vertical margin to float pills inside the bar (no edge contact)
+ * Border-radius 12px → "pill-like" feel
+ */
+#custom-ml4w-launcher,
+#custom-window,
+#custom-clock,
+#custom-media,
+#network,
+#bluetooth,
+#custom-powerprofile,
+#battery,
+#custom-notification,
+#workspaces {
+  padding: 0 11px;
+  margin: 8px 3px;
+  border-radius: 12px;
+  min-height: 28px;
+}
+
+#custom-ml4w-launcher:hover,
+#custom-window:hover,
+#custom-clock:hover,
+#custom-media:hover,
+#network:hover,
+#bluetooth:hover,
+#custom-powerprofile:hover,
+#battery:hover,
+#custom-notification:hover {
+  background: alpha(@on_background, 0.10);
+}
+
+/* ═══════════════════════════ Material Symbols sizing ═══════════════════════════ */
+
+/* Icon-bearing modules — Regular weight (lighter for Phosphor-like look) */
+#custom-ml4w-launcher,
+#custom-ml4w-launcher label,
+#network,
+#network label,
+#bluetooth,
+#bluetooth label,
+#custom-powerprofile,
+#custom-powerprofile label,
+#custom-notification,
+#custom-notification label {
+  font-family: "Phosphor";
+  font-size: 22px;
+  font-weight: 400;
+}
+
+/* Mixed icon+text modules — Inter for digits, Phosphor as fallback for icon glyph */
+#backlight,
+#backlight label,
+#pulseaudio,
+#pulseaudio label,
+#battery,
+#battery label {
+  font-family: "Inter", "Phosphor";
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#custom-ml4w-launcher {
+  font-size: 22px;
+  padding: 0 12px;
+  margin-right: 6px;
+}
+
+/* Media + mic (text-dominant) */
+#custom-media,
+#custom-mic {
+  font-family: "Inter", "Material Symbols Rounded", "Material Icons", "JetBrainsMono Nerd Font";
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ═══════════════════════════ Vertical separator ═══════════════════════════ */
+
+#custom-sep {
+  color: alpha(@on_background, 0.18);
+  font-size: 16px;
+  font-weight: 300;
+  padding: 0;
+  margin: 0 4px;
+  background: transparent;
+  min-height: 0;
+  border-radius: 0;
+}
+
+/* ═══════════════════════════ Left zone ═══════════════════════════ */
+
+/* Workspaces — inner pill with rounded buttons */
+#workspaces {
+  padding: 4px 5px;
+  background: alpha(@on_background, 0.06);
+  border-radius: 14px;
+  min-height: 28px;
+}
+
+#workspaces button {
+  padding: 0;
+  margin: 0 1.5px;
+  min-width: 24px;
+  min-height: 22px;
+  border-radius: 8px;
+  background: transparent;
+  color: alpha(@on_background, 0.55);
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  border: none;
+}
+
+#workspaces button:hover {
+  background: alpha(@on_background, 0.10);
+  color: @on_background;
+}
+
+#workspaces button.active {
+  background: @on_background;
+  color: @background;
+  font-weight: 700;
+  min-width: 24px;
+}
+
+#workspaces button.urgent {
+  background: @error;
+  color: @on_error;
+}
+
+/* Active window — text module, single line */
+#custom-window {
+  min-width: 100px;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: alpha(@on_background, 0.90);
+}
+
+/* ═══════════════════════════ Center zone ═══════════════════════════ */
+
+/* Clock — emphasized centerpiece pill */
+#custom-clock {
+  font-family: "Inter", sans-serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  padding: 0 18px;
+  background: alpha(@on_background, 0.06);
+}
+
+#custom-clock:hover {
+  background: alpha(@on_background, 0.12);
+}
+
+/* ═══════════════════════════ Right zone ═══════════════════════════ */
+
+/* Media — when .empty, fully collapsed */
+#custom-media {
+  color: alpha(@on_background, 0.85);
+  padding: 0 11px;
+}
+
+#custom-media.empty {
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  min-height: 0;
+  border: none;
+  background: transparent;
+}
+
+#custom-media.paused {
+  color: alpha(@on_background, 0.55);
+}
+
+/* Audio pill — groups mic + brightness + volume in one rounded container */
+#audio-pill {
+  background: alpha(@on_background, 0.06);
+  border-radius: 14px;
+  padding: 0 3px;
+  margin: 8px 3px;
+  min-height: 28px;
+}
+
+#custom-mic,
+#backlight,
+#pulseaudio {
+  margin: 4px 1px;
+  padding: 0 9px;
+  min-height: 20px;
+  border-radius: 9px;
+}
+
+#backlight:hover,
+#pulseaudio:hover {
+  background: alpha(@on_background, 0.10);
+}
+
+/* Mic mute — visible only when muted */
+#custom-mic {
+  color: @error;
+  font-weight: 600;
+}
+#custom-mic.open {
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  color: transparent;
+  background: transparent;
+}
+
+/* ─── Right-side status icons ─── */
+
+#network,
+#bluetooth,
+#custom-powerprofile,
+#custom-notification {
+  padding: 0 9px;
+}
+
+#network.disconnected,
+#bluetooth.disabled,
+#bluetooth.off {
+  color: alpha(@on_background, 0.35);
+}
+
+/* Hide only when no hardware exists */
+#bluetooth.no-controller {
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  color: transparent;
+  background: transparent;
+}
+
+#bluetooth.connected {
+  color: @primary;
+}
+
+/* Power profile color hints */
+#custom-powerprofile.performance { color: @error; }
+#custom-powerprofile.saver       { color: @primary; }
+#custom-powerprofile.balanced    { color: @on_background; }
+
+/* Updates / Idle / VPN / Privacy — same dimensions as status icons */
+#custom-updates,
+#custom-updates label,
+#custom-idle,
+#custom-idle label,
+#custom-vpn,
+#custom-vpn label,
+#custom-mic-privacy,
+#custom-mic-privacy label,
+#custom-camera-privacy,
+#custom-camera-privacy label {
+  font-family: "Phosphor";
+  font-size: 22px;
+  font-weight: 400;
+}
+
+#custom-updates,
+#custom-idle,
+#custom-vpn {
+  padding: 0 9px;
+  margin: 8px 3px;
+  border-radius: 10px;
+  min-height: 28px;
+}
+
+/* Updates — Inter for count, Phosphor span for icon */
+#custom-updates,
+#custom-updates label {
+  font-family: "Inter", "Phosphor";
+  font-size: 13px;
+  font-weight: 600;
+  color: @primary;
+}
+#custom-idle.caffeine { color: #f0b429; }
+#custom-vpn.active    { color: @primary; }
+
+#custom-updates:hover,
+#custom-idle:hover,
+#custom-vpn:hover,
+#custom-mic-privacy:hover,
+#custom-camera-privacy:hover {
+  background: alpha(@on_background, 0.10);
+}
+
+/* Privacy indicators — red glow, only visible when active */
+#custom-mic-privacy,
+#custom-camera-privacy {
+  padding: 0 9px;
+  margin: 8px 3px;
+  border-radius: 10px;
+  min-height: 28px;
+  color: @error;
+}
+
+#custom-mic-privacy.idle,
+#custom-camera-privacy.idle {
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  background: transparent;
+  color: transparent;
+}
+
+#custom-mic-privacy.recording,
+#custom-camera-privacy.recording {
+  background: alpha(@error, 0.12);
+  color: @error;
+}
+
+/* Battery */
+#battery {
+  padding: 0 11px;
+}
+#battery.warning  { color: #f0b429; }
+#battery.critical { color: @error; }
+#battery.charging { color: @primary; }
+
+/* Notification — slight emphasis */
+#custom-notification {
+  margin-right: 6px;
+  padding: 0 11px;
+}
+
+/* Tray — match wifi/BT module style exactly */
+#tray {
+  padding: 0 6px;
+  margin: 8px 3px;
+  min-height: 28px;
+  background: transparent;
+  border-radius: 12px;
+}
+
+#tray button,
+#tray > widget,
+#tray > * {
+  padding: 4px 11px;
+  margin: 0 3px;
+  border-radius: 10px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  -gtk-icon-style: regular;
+}
+
+#tray button:hover,
+#tray > widget:hover,
+#tray > *:hover {
+  background: alpha(@on_background, 0.10);
+}
+
+#tray > .needs-attention {
+  -gtk-icon-effect: highlight;
+}
+
+#tray .passive {
+  -gtk-icon-effect: dim;
+}
+
+/* ═══════════════════════════ Tooltips ═══════════════════════════ */
+
+tooltip {
+  background: alpha(@background, 0.95);
+  border: 1px solid alpha(@on_background, 0.15);
+  border-radius: 10px;
+  padding: 6px 8px;
+}
+
+tooltip label {
+  color: @on_background;
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+}
