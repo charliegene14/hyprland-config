@@ -6,7 +6,6 @@ Overlay de mes customisations par-dessus [ML4W dotfiles](https://github.com/myli
 
 - `.config/hypr/conf/custom.conf` — keybindings AZERTY (workspaces via `code:10..19`), env NVIDIA/Intel hybride, blur premium, exec dock + applets tray, bind `SUPER+V` cliphist
 - `.config/hypr/scripts/dock-premium.sh` — lance `nwg-dock-hyprland` avec config "AnkurAlpha" + thème premium
-- `.config/hypr/scripts/dock-fullscreen-listener.sh` — auto-hide du dock en fullscreen (IPC Hyprland via `socat`)
 - `.config/nwg-dock-hyprland/themes/premium/style.css` — thème dock
 - `.config/waybar/themes/premium/` — thème waybar (config + scripts associés)
 

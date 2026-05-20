@@ -6,7 +6,6 @@ ttf-material-symbols-variable
 otf-font-awesome
 
 # Dépendances runtime des scripts custom
-socat               # dock-fullscreen-listener.sh (IPC Hyprland)
 cliphist            # bind Super+V clipboard history
 wl-clipboard        # wl-copy pour le clipboard
 network-manager-applet  # nm-applet --indicator (tray Wi-Fi)
