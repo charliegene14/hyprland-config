@@ -1,0 +1,40 @@
+# Polices (CSS premium référence: Inter + Phosphor + Material Symbols Rounded + JetBrainsMono Nerd)
+inter-font
+ttf-phosphor-icons
+ttf-firacode-nerd
+ttf-jetbrains-mono-nerd
+ttf-material-symbols-variable
+otf-font-awesome
+
+# Audio (waybar: audio-menu, mic, mic-privacy, pulseaudio module, backlight scroll)
+wireplumber          # wpctl, pactl wrappers
+pavucontrol
+playerctl
+
+# Réseau & VPN (waybar: wifi-menu, vpn ; hypr: nm-applet tray)
+networkmanager
+nm-connection-editor
+network-manager-applet
+wireguard-tools      # détecté optionnellement par vpn.sh (command -v wg)
+
+# Bluetooth (waybar: bluetooth-menu ; hypr: blueman-applet tray)
+bluez-utils          # bluetoothctl
+blueman
+
+# Affichage / batterie / power
+brightnessctl
+power-profiles-daemon
+
+# Notifications & polkit (notify-send + pkexec rfkill unblock)
+swaync
+libnotify
+polkit
+
+# Clipboard (SUPER+V cliphist popup)
+cliphist
+wl-clipboard
+
+# Outils divers
+jq                   # media.sh, window.sh
+rofi                 # menus contextuels wifi/bt/audio + cliphist
+quickshell           # qs ipc call sidebar/calendar/welcome

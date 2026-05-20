@@ -1,0 +1,2 @@
+# Dock custom (lancé par hypr/scripts/dock-premium.sh)
+nwg-dock-hyprland
