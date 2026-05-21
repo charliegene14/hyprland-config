@@ -1,17 +1,43 @@
 # dotfiles-custom
 
-Overlay de mes customisations par-dessus [ML4W dotfiles](https://github.com/mylinuxforwork/dotfiles) (stable).
+Overlay perso sur [HyDE Project](https://github.com/HyDE-Project/HyDE) (Hyprland on EndeavourOS).
 
 ## Contenu
 
-- `.config/hypr/conf/custom.conf` — keybindings AZERTY (workspaces via `code:10..19`), env NVIDIA/Intel hybride, blur premium, exec dock + applets tray, bind `SUPER+V` cliphist
-- `.config/hypr/scripts/dock-premium.sh` — lance `nwg-dock-hyprland` avec config "AnkurAlpha" + thème premium
-- `.config/nwg-dock-hyprland/themes/premium/style.css` — thème dock
-- `.config/waybar/themes/premium/` — thème waybar (config + scripts associés)
+```
+.config/
+├── hypr/
+│   ├── hyprland.conf          # Template HyDE (source userprefs/keybindings/etc)
+│   ├── userprefs.conf         # kb_layout=fr, blur premium, exec-once eww
+│   ├── monitors.conf          # (vide — Hyprland auto-detect, scale 1.5 par défaut)
+│   ├── nvidia.conf            # LIBVA=iHD (iGPU Intel pour HW video decode)
+│   ├── keybindings.conf       # HyDE binds + section "ML4W overlay" + workspaces AZERTY
+│   └── scripts/
+│       └── waybar-style-cycle.sh   # SUPER SHIFT+PgUp/PgDn cycle styles waybar
+└── eww/
+    ├── eww.yuck               # Widget desktop sysinfo (CPU/RAM/dGPU/iGPU/disks/net)
+    ├── eww.scss               # Style sobre semi-transparent
+    └── scripts/
+        └── sysinfo.sh         # Source unifiée JSON pour eww
 
-## Install (nouvelle machine)
+.local/
+└── share/
+    └── waybar/
+        └── layouts/
+            └── custom.jsonc   # Layout perso : workspaces + taskbar + clock séparé + power-profiles + updates + hyde-menu
+```
 
-Pré-requis : Arch (ou dérivé) avec ML4W stable déjà installé.
+## Particularités
+
+- **Keybindings hybrides** : on garde les binds HyDE (rofi `SUPER+A`, clipboard `SUPER+V`, lock `SUPER+L`…) + on ajoute le mapping ML4W familier (`SUPER+RETURN` terminal, `SUPER+T` float, `SUPER+F/M` fullscreen/maximize, `SUPER+K` swapsplit, `SUPER ALT+arrows` swapwindow, `SUPER+CTRL+K` keybinds hint…).
+- **Workspaces AZERTY** : `SUPER+&é"'(-è_çà` via `code:10..19` (rangée physique 1..0, indépendante du layout).
+- **GPU hybride** : NVIDIA RTX 4050 pour render offload explicite, Intel iGPU pour HW video decode (low-power).
+- **Waybar layout `custom`** : workspaces, taskbar apps, clock séparé, power-profiles-daemon (cycle profil énergie au scroll), updates pacman, swaync alternative dunst, keybindhint, hyde-menu.
+- **Desktop widget eww** en haut-droite (`:stacking "bg"`, sous les fenêtres) : CPU/RAM/dGPU/iGPU/Disks (tous les mounts y compris USB)/Network/Uptime/Load avg.
+
+## Install sur une nouvelle machine
+
+Pré-requis : EndeavourOS (ou Arch) avec HyDE déjà installé et fonctionnel.
 
 ```bash
 git clone git@github.com:charliegene14/hyprland-config.git ~/dotfiles-custom
@@ -20,25 +46,16 @@ cd ~/dotfiles-custom
 ```
 
 Le script :
-1. Installe les paquets manquants (`pacman -S --needed`) listés dans `packages-pacman.txt` — uniquement ceux qui ne sont pas fournis par ML4W (`inter-font`, `bluez-utils`, `wireguard-tools`)
-2. Si `packages-aur.txt` existe et non vide : installe via `yay` (actuellement non utilisé — tout vient de ML4W ou pacman officiel)
-3. Copie l'overlay dans `~/.mydotfiles/com.ml4w.dotfiles.stable/.config/` avec backup `*.bak.<date>` de tout fichier ML4W remplacé
+1. Backup les fichiers HyDE qui vont être remplacés (`*.bak.<date>`)
+2. Copie l'overlay dans `~/.config/` et `~/.local/share/`
+3. Installe les paquets manquants (`eww`, `intel-media-driver` pour iHD, etc.)
 4. Rend les scripts exécutables
+5. Demande à recharger Hyprland
 
-## Workflow update ML4W
+## Archive
 
-ML4W écrase ses propres fichiers à chaque update — ce qui peut casser nos overrides.
-
+L'ancien overlay ML4W est conservé sous le tag git `ml4w-era`.
 ```bash
-# Après une update ML4W :
-cd ~/dotfiles-custom
-./install.sh   # réapplique l'overlay
+git show ml4w-era
+git checkout ml4w-era  # browse l'ancien état (read-only)
 ```
-
-Si ML4W introduit une nouvelle version d'un fichier qu'on override (ex: une nouvelle option pertinente dans `custom.conf`), comparer `*.bak.<date>` au nouveau fichier et merger à la main.
-
-## Ce qui n'est volontairement **pas** versionné
-
-- Symlinks `~/.config/*` (gérés par ML4W)
-- Fichiers générés par matugen (`colors.conf`, `colors.css`, `ml4w/colors/*`, etc.) — réécrits à chaque changement de thème
-- Le reste de ML4W non modifié — récupéré via leur installer

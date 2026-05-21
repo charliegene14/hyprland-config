@@ -1,0 +1,104 @@
+;; ─── Desktop system monitor widget ────────────────────────────────
+;; Polls a unified bash script every 2s, displays CPU/RAM/GPU/Disks/Net.
+
+(defpoll SYSINFO :interval "2s" :initial '{"cpu":{"usage":0,"freq_ghz":"0.0","temp":0},"ram":{"percent":0,"used_gb":"0","total_gb":"0"},"gpu":{"usage":0,"vram_used":0,"vram_total":0,"temp":0,"name":"-"},"disks":[],"net":{"up_kbs":"0.0","down_kbs":"0.0","iface":"-"},"uptime":"-","load":{"l1":"-","l5":"-","l15":"-"}}'
+  `scripts/sysinfo.sh --all`)
+
+;; ─── Reusable section ──────────────────────────
+(defwidget section [title]
+  (box :class "section" :orientation "v" :space-evenly false :hexpand true
+    (label :class "section-title" :halign "start" :hexpand true :wrap false :text title)
+    (children)))
+
+;; ─── Progress bar ──────────────────────────────
+(defwidget bar [percent]
+  (box :class "bar" :orientation "h"
+    (scale :class "bar-scale" :value percent :max 100 :min 0 :active false)))
+
+;; ─── CPU ──────────────────────────────────────
+(defwidget cpu_block []
+  (section :title "CPU"
+    (box :orientation "h" :space-evenly false
+      (label :class "metric-label" :halign "start" :hexpand true :text "Usage")
+      (label :class "metric-value" :text "${SYSINFO.cpu.usage}%"))
+    (bar :percent {SYSINFO.cpu.usage})
+    (label :class "metric-sub" :halign "start"
+      :text "${SYSINFO.cpu.freq_ghz} GHz   ·   ${SYSINFO.cpu.temp}°C")
+    (label :class "metric-sub" :halign "start"
+      :text "load ${SYSINFO.load.l1} · ${SYSINFO.load.l5} · ${SYSINFO.load.l15}")))
+
+;; ─── RAM ──────────────────────────────────────
+(defwidget ram_block []
+  (section :title "RAM"
+    (box :orientation "h" :space-evenly false
+      (label :class "metric-label" :halign "start" :hexpand true :text "Usage")
+      (label :class "metric-value" :text "${SYSINFO.ram.percent}%"))
+    (bar :percent {SYSINFO.ram.percent})
+    (label :class "metric-sub" :halign "start"
+      :text "${SYSINFO.ram.used_gb} / ${SYSINFO.ram.total_gb} GB")))
+
+;; ─── dGPU (NVIDIA) ────────────────────────────
+(defwidget dgpu_block []
+  (section :title "GPU (dedicated)"
+    (box :orientation "h" :space-evenly false
+      (label :class "metric-label" :halign "start" :hexpand true :text "${SYSINFO.dgpu.name}")
+      (label :class "metric-value" :text "${SYSINFO.dgpu.usage}%"))
+    (bar :percent {SYSINFO.dgpu.usage})
+    (label :class "metric-sub" :halign "start"
+      :text "VRAM ${SYSINFO.dgpu.vram_used} / ${SYSINFO.dgpu.vram_total} MB  ·  ${SYSINFO.dgpu.temp}°C")))
+
+;; ─── iGPU (Intel) ─────────────────────────────
+(defwidget igpu_block []
+  (section :title "GPU (integrated)"
+    (box :orientation "h" :space-evenly false
+      (label :class "metric-label" :halign "start" :hexpand true :text "${SYSINFO.igpu.name}")
+      (label :class "metric-value" :text "${SYSINFO.igpu.usage}%"))
+    (bar :percent {SYSINFO.igpu.usage})
+    (label :class "metric-sub" :halign "start"
+      :text "${SYSINFO.igpu.freq_mhz} / ${SYSINFO.igpu.max_mhz} MHz")))
+
+;; ─── Disks (dynamic list) ─────────────────────
+(defwidget disks_block []
+  (section :title "DISKS"
+    (box :orientation "v" :space-evenly false
+      (for d in {SYSINFO.disks}
+        (box :class "disk-entry" :orientation "v" :space-evenly false
+          (box :orientation "h" :space-evenly false
+            (label :class "metric-label" :halign "start" :hexpand true :text "${d.label}")
+            (label :class "metric-value" :text "${d.percent}%"))
+          (bar :percent {d.percent})
+          (label :class "metric-sub" :halign "start"
+            :text "${d.used_gb} / ${d.total_gb} GB"))))))
+
+;; ─── Network ──────────────────────────────────
+(defwidget net_block []
+  (section :title "NET (${SYSINFO.net.iface})"
+    (label :class "net-line" :halign "start"
+      :text "↓ ${SYSINFO.net.down_kbs} KB/s")
+    (label :class "net-line" :halign "start"
+      :text "↑ ${SYSINFO.net.up_kbs} KB/s")))
+
+;; ─── Footer ──────────────────────────────────
+(defwidget footer []
+  (label :class "footer" :halign "center" :text "uptime ${SYSINFO.uptime}"))
+
+;; ─── Whole widget ─────────────────────────────
+(defwidget sysinfo []
+  (box :class "sysinfo-root" :orientation "v" :space-evenly false
+    (cpu_block)
+    (ram_block)
+    (dgpu_block)
+    (igpu_block)
+    (disks_block)
+    (net_block)
+    (footer)))
+
+;; ─── Window definition ────────────────────────
+(defwindow sysinfo
+  :monitor 0
+  :geometry (geometry :anchor "top right" :x "16px" :y "56px" :width "300px")
+  :stacking "bg"
+  :exclusive false
+  :focusable false
+  :namespace "eww-sysinfo"
+  (sysinfo))
