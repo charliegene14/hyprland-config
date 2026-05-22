@@ -97,7 +97,7 @@
 (defwindow sysinfo
   :monitor 0
   :geometry (geometry :anchor "top right" :x "16px" :y "56px" :width "300px")
-  :stacking "bg"
+  :stacking "bottom"
   :exclusive false
   :focusable false
   :namespace "eww-sysinfo"
